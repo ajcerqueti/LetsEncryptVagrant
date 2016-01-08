@@ -10,4 +10,4 @@ echo "Type your AWS S3 bucket region , followed by [ENTER]:"
 read region
 mkdir -p .aws
 echo -e "[default]\naws_access_key_id=$aws_access_key_id\naws_secret_access_key=$aws_secret_access_key" > .aws/credentials
-echo -e  "[default]\nregion=$region" > .aws/config
+echo -e "[default]\nregion=$region" > .aws/config
