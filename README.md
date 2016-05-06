@@ -21,11 +21,16 @@ Any issue can probably be fixed with a quick ```vagrant provision```.
 Configuration
 -------------
 Copy ```/vagrant/config.yml.dist``` to ```/vagrant/config.yml```
+
 Follow the example configuration. You'll need your AWS creds, know your bucket region, plus a list of your distributions.
+
 For each distribution:
-    ```Domain name``` is your CNAME (cdn.example.com)
-    ```S3 bucket``` is your AWS S3 bucket
-    ```Cloudfront distribution ID``` is the AWSCloudFront Distribution ID (EXXXXXXEXAMPLE).
+
+```Domain name``` is your CNAME (cdn.example.com)
+
+```S3 bucket``` is your AWS S3 bucket
+
+```Cloudfront distribution ID``` is the AWSCloudFront Distribution ID (EXXXXXXEXAMPLE)
 
 Configure AWS CLI by running
 ```
