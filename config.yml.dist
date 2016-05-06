@@ -1,0 +1,14 @@
+config:
+    aws_access_key: # AWS access key
+    aws_secret_access_key: # AWS secret key
+    aws_s3_bucket_region: # S3 bucket region - us-east-1
+    # Repeatable struct for distributions
+    distributions:
+        -
+            # Domain name - cdn.example.com
+            # S3 bucket/origin - my_bucket
+            # Cloudfront distribution ID - E0XXXX0XX00X0X
+        -
+            # 2nd domain name - cdn.example.com
+            # 2nd S3 bucket/origin - my_bucket
+            # 2nd Cloudfront distribution ID - E0XXXX0XX00X0X

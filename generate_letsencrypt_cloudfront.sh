@@ -1,22 +1,29 @@
 #!/bin/bash
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+echo ""
 
-show_usage() {
-    echo -e "Usage: $0 [domain] [s3_bucket] [cloudfront_distribution_id]"
-    echo ""
-}
-
-if [ "$#" -ne 3 ]; then
-    show_usage
-    exit 1
+# Check config.yml exists"
+CONFIG_FILE="$DIR/config.yml"
+if [ ! -f $CONFIG_FILE ];
+then
+	echo "File $CONFIG_FILE does not exist. Exiting..."
+	exit
 fi
 
-cd ~/letsencrypt/
-source venv/bin/activate
+# Get AWS config
+AWS_ACCESS_KEY="$(cat $CONFIG_FILE | shyaml get-value config.aws_access_key)"
+AWS_SECRET_ACCESS_KEY="$(cat $CONFIG_FILE | shyaml get-value config.aws_secret_access_key)"
 
-# create certificate
-DOMAIN=$1
-S3_BUCKET=$2
-DISTRIBUTION_ID=$3
-sudo letsencrypt --agree-tos -a letsencrypt-s3front:auth --letsencrypt-s3front:auth-s3-bucket $S3_BUCKET -i letsencrypt-s3front:installer --letsencrypt-s3front:installer-cf-distribution-id $DISTRIBUTION_ID -d $DOMAIN
+# Iterate through distributions, run letsencrypt, upload cert to AWS
+cat $CONFIG_FILE | shyaml get-values-0 config.distributions | while read -r -d $'\0' DISTRIBUTION_STRUCT; do
+    arr=($DISTRIBUTION_STRUCT)
+    DOMAIN_NAME="$(echo ${arr[0]})"
+    ORIGIN="$(echo ${arr[1]})"
+    DISTRIBUTION_ID="$(echo ${arr[2]})"
+    sudo AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY" AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY" letsencrypt --agree-tos --keep-until-expiring -a letsencrypt-s3front:auth --letsencrypt-s3front:auth-s3-bucket $ORIGIN -i letsencrypt-s3front:installer --letsencrypt-s3front:installer-cf-distribution-id $DISTRIBUTION_ID -d $DOMAIN_NAME
+done
 
-deactivate
+# Finished
+echo ""
+echo "All distributions processed"
+echo ""

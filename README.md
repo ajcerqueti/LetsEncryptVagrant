@@ -18,17 +18,29 @@ Standard for Vagrant. We just launch a VM using: ```vagrant up```, then ssh into
 
 Any issue can probably be fixed with a quick ```vagrant provision```.
 
+Configuration
+-------------
+Copy ```/vagrant/config.yml.dist``` to ```/vagrant/config.yml```
+Follow the example configuration. You'll need your AWS creds, know your bucket region, plus a list of your distributions.
+For each distribution:
+    ```Domain name``` is your CNAME (cdn.example.com)
+    ```S3 bucket``` is your AWS S3 bucket
+    ```Cloudfront distribution ID``` is the AWSCloudFront Distribution ID (EXXXXXXEXAMPLE).
 
-Generating certificates for CloudFront CNAMEs
----------------------------------------------
-Configure AWS CLI by running ```/vagrant/aws_configure.sh```
-
-After that, you can generate SSL certs from Let's Encrypt, and put them in place for a CNAME on AWS CloudFront using the ```/vagrant/generate_letsencrypt_cloudfront.sh``` script:
-
-```shell
-/vagrant/generate_letsencrypt_cloudfront.sh [domain] [s3_bucket] [cloudfront_distribution_id]
+Configure AWS CLI by running
+```
+cd /vagrant
+./aws_configure.sh
 ```
 
-where ```domain``` is your CNAME (cdn.example.com), ```s3_bucket``` is your AWS S3 bucket, and ```cloudfront_distribution_id``` is the AWSCloudFront Distribution ID (EXXXXXXEXAMPLE).
+Make sure the CNAME is pointing to the CloudFront URL (dxxexample.cloudfront.net), and is listed as an alias inside the distribution.
 
-Make sure the CNAME is pointing to the CloudFront URL (dxxexample.cloudfront.net) first, and it listed as an alias inside the distribution.
+Generating certificates
+-----------------------
+Run
+```
+cd /vagrant
+./generate_letsencrypt_cloudfront.sh
+```
+
+This will iterate through your distributions, generating and uploading a new certificate where needed.
